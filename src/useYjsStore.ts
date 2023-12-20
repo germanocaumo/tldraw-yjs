@@ -16,15 +16,17 @@ import {
 } from '@tldraw/tldraw'
 import { useEffect, useMemo, useState } from 'react'
 import { YKeyValue } from 'y-utility/y-keyvalue'
-import { WebsocketProvider } from 'y-websocket'
+import { HocuspocusProvider } from "@hocuspocus/provider";
 import * as Y from 'yjs'
 import { DEFAULT_STORE } from './default_store'
+
+const USER_NAME = new URLSearchParams(window.location.search)?.get("name");
 
 export function useYjsStore({
 	roomId = 'example',
 	hostUrl = import.meta.env.MODE === 'development'
 		? 'ws://localhost:1234'
-		: 'wss://demos.yjs.dev',
+		: import.meta.env.VITE_HOST_URL,
 	shapeUtils = [],
 }: Partial<{
 	hostUrl: string
@@ -52,7 +54,11 @@ export function useYjsStore({
 		return {
 			yDoc,
 			yStore,
-			room: new WebsocketProvider(hostUrl, roomId, yDoc, { connect: true }),
+			room: new HocuspocusProvider({
+				url: hostUrl,
+				name: roomId,
+				document: yDoc
+			}),
 		}
 	}, [hostUrl, roomId])
 
@@ -131,8 +137,8 @@ export function useYjsStore({
 
 			/* -------------------- Awareness ------------------- */
 
-			const yClientId = room.awareness.clientID.toString()
-			setUserPreferences({ id: yClientId })
+			const yClientId = room.awareness?.clientID.toString()
+			setUserPreferences({ id: yClientId! })
 
 			const userPreferences = computed<{
 				id: string
@@ -143,7 +149,7 @@ export function useYjsStore({
 				return {
 					id: user.id,
 					color: user.color ?? defaultUserPreferences.color,
-					name: user.name ?? defaultUserPreferences.name,
+					name: USER_NAME ?? user.name ?? defaultUserPreferences.name,
 				}
 			})
 
@@ -153,14 +159,14 @@ export function useYjsStore({
 				createPresenceStateDerivation(userPreferences, presenceId)(store)
 
 			// Set our initial presence from the derivation's current value
-			room.awareness.setLocalStateField('presence', presenceDerivation.value)
+			room.awareness?.setLocalStateField('presence', presenceDerivation.value)
 
 			// When the derivation change, sync presence to to yjs awareness
 			unsubs.push(
 				react('when presence changes', () => {
 					const presence = presenceDerivation.value
 					requestAnimationFrame(() => {
-						room.awareness.setLocalStateField('presence', presence)
+						room.awareness?.setLocalStateField('presence', presence)
 					})
 				})
 			)
@@ -171,7 +177,7 @@ export function useYjsStore({
 				updated: number[]
 				removed: number[]
 			}) => {
-				const states = room.awareness.getStates() as Map<
+				const states = room.awareness?.getStates() as Map<
 					number,
 					{ presence: TLInstancePresence }
 				>
@@ -207,8 +213,8 @@ export function useYjsStore({
 				})
 			}
 
-			room.awareness.on('update', handleUpdate)
-			unsubs.push(() => room.awareness.off('update', handleUpdate))
+			room.awareness?.on('update', handleUpdate)
+			unsubs.push(() => room.awareness?.off('update', handleUpdate))
 
 			// 2.
 			// Initialize the store with the yjs doc records—or, if the yjs doc

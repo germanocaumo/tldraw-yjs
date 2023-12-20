@@ -2,14 +2,16 @@ import { Tldraw, track, useEditor } from '@tldraw/tldraw'
 import '@tldraw/tldraw/tldraw.css'
 import { useYjsStore } from './useYjsStore'
 
+const DOCUMENT = new URLSearchParams(window.location.search)?.get("document") || 'example17'
+
 const HOST_URL =
 	import.meta.env.MODE === 'development'
 		? 'ws://localhost:1234'
-		: 'wss://demos.yjs.dev'
+		: import.meta.env.VITE_HOST_URL
 
 export default function YjsExample() {
 	const store = useYjsStore({
-		roomId: 'example17',
+		roomId: DOCUMENT,
 		hostUrl: HOST_URL,
 	})
 
