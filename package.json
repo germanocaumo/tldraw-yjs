@@ -14,7 +14,7 @@
     "@hocuspocus/extension-logger": "^2.8.1",
     "@hocuspocus/extension-sqlite": "^2.8.1",
     "@hocuspocus/provider": "^2.8.1",
-    "@tldraw/tldraw": "^2.0.0-alpha.17",
+    "@tldraw/tldraw": "^2.0.0-alpha.19",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "y-utility": "^0.1.3",
