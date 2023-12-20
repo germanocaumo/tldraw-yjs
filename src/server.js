@@ -1,10 +1,11 @@
 import { Server } from '@hocuspocus/server'
 import { SQLite } from '@hocuspocus/extension-sqlite'
 import { Logger } from "@hocuspocus/extension-logger";
+import 'dotenv/config'
 
 const server = Server.configure({
-  port: 1234,
-  name: "hocuspocus",
+  port: process.env.SERVER_PORT || 1234,
+  name: process.env.SERVER_LOG_PREFIX || "hocuspocus",
 
   async onConnect() {
     console.log('🔮')
@@ -12,7 +13,7 @@ const server = Server.configure({
 
   extensions: [
     new SQLite({
-      database: 'db.sqlite',
+      database: process.env.DATABASE_FILE || 'db.sqlite',
     }),
     new Logger({
       onLoadDocument: true,
