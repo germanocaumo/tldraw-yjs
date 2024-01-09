@@ -25,7 +25,7 @@ export default function YjsExample() {
 const NameEditor = track(() => {
 	const editor = useEditor()
 
-	const { color, name } = editor.user
+	const { color, name } = editor.user.getUserPreferences();
 
 	return (
 		<div style={{ pointerEvents: 'all', display: 'flex' }}>

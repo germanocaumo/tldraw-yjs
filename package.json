@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "start": "vite",
     "dev": "concurrently \"vite\" \"HOST=localhost PORT=1234 node src/server.js\" --kill-others",
     "dev:win": "concurrently \"vite\" \"set HOST=localhost&& set PORT=1234 && npx y-websocket\" --kill-others",
     "build": "tsc && vite build",
@@ -14,7 +15,7 @@
     "@hocuspocus/extension-logger": "^2.8.1",
     "@hocuspocus/extension-sqlite": "^2.8.1",
     "@hocuspocus/provider": "^2.8.1",
-    "@tldraw/tldraw": "^2.0.0-alpha.19",
+    "@tldraw/tldraw": "^2.0.0-beta.1",
     "dotenv": "^16.3.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
